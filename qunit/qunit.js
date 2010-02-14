@@ -304,7 +304,24 @@ var QUnit = {
 	notStrictEqual: function(actual, expected, message) {
 		push(expected !== actual, actual, expected, message);
 	},
-	
+
+	/**
+	 * Checks that the given expression throws an exception of the expected type, with an optional message.
+	 *
+	 * @example raises( function() { foo.bar; }, "ReferenceError", "invalid property access raises TypeError exception" );
+	 *
+	 * @param Function expression
+	 * @param String expected exception type
+	 * @param String message (optional)
+	 */
+	raises: function(expression, expected, message) {
+		try {
+			push(false, expression(), expected, message);
+		} catch(ex) {
+			push(ex.name == expected, ex.name, expected, message);
+		}
+	},
+
 	start: function() {
 		// A slight delay, to avoid any current callbacks
 		if ( window.setTimeout ) {
