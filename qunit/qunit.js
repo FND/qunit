@@ -84,7 +84,7 @@ var QUnit = {
 				var li = document.createElement("li");
 					li.appendChild( b );
 					li.id = "current-test-output";
-				tests.appendChild( li )
+				tests.appendChild( li );
 			}
 
 			try {
@@ -886,8 +886,9 @@ QUnit.equiv = function () {
                 for (i in a) { // be strict: don't ensures hasOwnProperty and go deep
                     loop = false;
                     for(j=0;j<parents.length;j++){
-                        if(parents[j] === a[i])
+                        if(parents[j] === a[i]) {
                             loop = true; //don't go down the same path twice
+                        }
                     }
                     aProperties.push(i); // collect a's properties
 
@@ -946,28 +947,31 @@ QUnit.equiv = function () {
 QUnit.jsDump = (function() {
 	function quote( str ) {
 		return '"' + str.toString().replace(/"/g, '\\"') + '"';
-	};
+	}
 	function literal( o ) {
 		return o + '';	
-	};
+	}
 	function join( pre, arr, post ) {
 		var s = jsDump.separator(),
 			base = jsDump.indent(),
 			inner = jsDump.indent(1);
-		if ( arr.join )
+		if ( arr.join ) {
 			arr = arr.join( ',' + s + inner );
-		if ( !arr )
+		}
+		if ( !arr ) {
 			return pre + post;
+		}
 		return [ pre, inner + arr, base + post ].join(s);
-	};
+	}
 	function array( arr ) {
 		var i = arr.length,	ret = Array(i);					
 		this.up();
-		while ( i-- )
+		while ( i-- ) {
 			ret[i] = this.parse( arr[i] );				
+		}
 		this.down();
 		return join( '[', ret, ']' );
-	};
+	}
 	
 	var reName = /^function (\w+)/;
 	
@@ -1009,11 +1013,13 @@ QUnit.jsDump = (function() {
 			return this.multiline ?	this.HTML ? '<br />' : '\n' : this.HTML ? '&nbsp;' : ' ';
 		},
 		indent:function( extra ) {// extra can be a number, shortcut for increasing-calling-decreasing
-			if ( !this.multiline )
+			if ( !this.multiline ) {
 				return '';
+			}
 			var chr = this.indentChar;
-			if ( this.HTML )
+			if ( this.HTML ) {
 				chr = chr.replace(/\t/g,'   ').replace(/ /g,'&nbsp;');
+			}
 			return Array( this._depth_ + (extra||0) ).join(chr);
 		},
 		up:function( a ) {
@@ -1042,8 +1048,9 @@ QUnit.jsDump = (function() {
 			'function':function( fn ) {
 				var ret = 'function',
 					name = 'name' in fn ? fn.name : (reName.exec(fn)||[])[1];//functions never have name in IE
-				if ( name )
+				if ( name ) {
 					ret += ' ' + name;
+				}
 				ret += '(';
 				
 				ret = [ ret, this.parse( fn, 'functionArgs' ), '){'].join('');
@@ -1055,8 +1062,9 @@ QUnit.jsDump = (function() {
 			object:function( map ) {
 				var ret = [ ];
 				this.up();
-				for ( var key in map )
+				for ( var key in map ) {
 					ret.push( this.parse(key,'key') + ': ' + this.parse(map[key]) );
+				}
 				this.down();
 				return join( '{', ret, '}' );
 			},
@@ -1069,18 +1077,22 @@ QUnit.jsDump = (function() {
 					
 				for ( var a in this.DOMAttrs ) {
 					var val = node[this.DOMAttrs[a]];
-					if ( val )
+					if ( val ) {
 						ret += ' ' + a + '=' + this.parse( val, 'attribute' );
+					}
 				}
 				return ret + close + open + '/' + tag + close;
 			},
 			functionArgs:function( fn ) {//function calls it internally, it's the arguments part of the function
 				var l = fn.length;
-				if ( !l ) return '';				
+				if ( !l ) {
+					return '';
+				}
 				
 				var args = Array(l);
-				while ( l-- )
+				while ( l-- ) {
 					args[l] = String.fromCharCode(97+l);//97 is 'a'
+				}
 				return ' ' + args.join(', ') + ' ';
 			},
 			key:quote, //object calls it internally, the key part of an item in a map
@@ -1123,7 +1135,7 @@ function getText( elems ) {
 	}
 
 	return ret;
-};
+}
 
 /*
  * Javascript Diff Algorithm
@@ -1145,20 +1157,22 @@ QUnit.diff = (function() {
 		var os = new Object();
 		
 		for (var i = 0; i < n.length; i++) {
-			if (ns[n[i]] == null) 
+			if (ns[n[i]] == null) {
 				ns[n[i]] = {
 					rows: new Array(),
 					o: null
 				};
+			}
 			ns[n[i]].rows.push(i);
 		}
 		
 		for (var i = 0; i < o.length; i++) {
-			if (os[o[i]] == null) 
+			if (os[o[i]] == null) {
 				os[o[i]] = {
 					rows: new Array(),
 					n: null
 				};
+			}
 			os[o[i]].rows.push(i);
 		}
 		
@@ -1259,7 +1273,7 @@ QUnit.diff = (function() {
 		}
 		
 		return str;
-	}
+	};
 })();
 
 })(this);
